@@ -6,8 +6,8 @@ An AI-powered web application that turns messy notes into smart and interactive 
 
 - **Note Input**: Upload or type your notes directly in the input field.
 - **Summarization**: Get AI-generated summaries of your notes.
-- **Flashcards**: Auto-generate flashcards for effective studying.
-- **Quiz Generation**: Create quizzes to test your knowledge.
+- **Flashcards**: Auto-generate 5-10 flashcards for effective studying.
+- **Quiz Generation**: Create 5 quizzes to test your knowledge.
 - **Q&A Chat**: Ask questions about your notes and get AI-powered answers.
 
 ## Techology
@@ -28,5 +28,6 @@ An AI-powered web application that turns messy notes into smart and interactive 
 3. **Study**: Use the generated content to study more effectively.
 
 ## License
+
 **Copyright (c) 2025 Tran Luong - All rights reserved.**  
 Unauthorized use, copying, modification, or distribution of this software is prohibited.
