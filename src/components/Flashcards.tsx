@@ -60,19 +60,27 @@ export default function Flashcards({ flashcards, loading }: FlashcardsProps) {
         className="cursor-pointer perspective-1000"
       >
         <div
-          className={`relative w-full h-48 transition-transform duration-500 transform-style-preserve-3d ${
-            isFlipped ? 'rotate-y-180' : ''
-          }`}
+          className="relative w-full h-48 transition-transform duration-500"
+          style={{ 
+            transformStyle: 'preserve-3d',
+            transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)'
+          }}
         >
           {/* Front of card */}
-          <div className={`absolute inset-0 p-6 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg shadow-lg flex items-center justify-center backface-hidden ${isFlipped ? 'opacity-0' : 'opacity-100'}`}>
+          <div 
+            className="absolute inset-0 p-6 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg shadow-lg flex items-center justify-center"
+            style={{ backfaceVisibility: 'hidden' }}
+          >
             <p className="text-white text-center text-lg font-medium">
               {flashcards[currentIndex]?.front}
             </p>
           </div>
           
           {/* Back of card */}
-          <div className={`absolute inset-0 p-6 bg-gradient-to-br from-green-500 to-green-600 rounded-lg shadow-lg flex items-center justify-center backface-hidden ${isFlipped ? 'opacity-100' : 'opacity-0'}`}>
+          <div 
+            className="absolute inset-0 p-6 bg-gradient-to-br from-green-500 to-green-600 rounded-lg shadow-lg flex items-center justify-center"
+            style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
+          >
             <p className="text-white text-center text-lg font-medium">
               {flashcards[currentIndex]?.back}
             </p>
