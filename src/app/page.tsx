@@ -91,7 +91,7 @@ export default function Home() {
               </svg>
             </div>
             <div>
-              <h1 className="text-xl font-bold text-gray-800 dark:text-white">StudyAI</h1>
+              <h1 className="text-xl font-bold text-gray-800 dark:text-white">StudiOS</h1>
               <p className="text-sm text-gray-500 dark:text-gray-400">Transform notes into smart study experiences</p>
             </div>
           </div>

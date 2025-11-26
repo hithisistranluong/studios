@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "StudyAI - Transform Notes into Smart Study Experiences",
-  description: "An AI-powered web application that transforms messy notes into smart, interactive study experiences with summaries, flashcards, quizzes, and Q&A.",
+  title: "StudiOS",
+  description: "An AI-powered web application that transforms messy notes into smart, interactive study experiences with summaries, flashcards, quizzes, and AI chatbot.",
 };
 
 export default function RootLayout({
