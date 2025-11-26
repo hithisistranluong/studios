@@ -47,64 +47,66 @@ export default function Flashcards({ flashcards, loading }: FlashcardsProps) {
   };
 
   return (
-    <div className="space-y-4">
-      <div className="flex justify-between items-center mb-4">
-        <h3 className="text-lg font-semibold text-gray-800 dark:text-white">Flashcards</h3>
-        <span className="text-sm text-gray-500 dark:text-gray-400">
-          {currentIndex + 1} / {flashcards.length}
-        </span>
-      </div>
-      
-      <div
-        onClick={() => setIsFlipped(!isFlipped)}
-        className="cursor-pointer perspective-1000"
-      >
+    <div className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md">
+      <div className="space-y-4">
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-lg font-semibold text-gray-800 dark:text-white">Flashcards</h3>
+          <span className="text-sm text-gray-500 dark:text-gray-400">
+            {currentIndex + 1} / {flashcards.length}
+          </span>
+        </div>
+        
         <div
-          className="relative w-full h-48 transition-transform duration-500"
-          style={{ 
-            transformStyle: 'preserve-3d',
-            transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)'
-          }}
+          onClick={() => setIsFlipped(!isFlipped)}
+          className="cursor-pointer perspective-1000"
         >
-          {/* Front of card */}
-          <div 
-            className="absolute inset-0 p-6 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg shadow-lg flex items-center justify-center"
-            style={{ backfaceVisibility: 'hidden' }}
+          <div
+            className="relative w-full h-48 transition-transform duration-500"
+            style={{ 
+              transformStyle: 'preserve-3d',
+              transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)'
+            }}
           >
-            <p className="text-white text-center text-lg font-medium">
-              {flashcards[currentIndex]?.front}
-            </p>
-          </div>
-          
-          {/* Back of card */}
-          <div 
-            className="absolute inset-0 p-6 bg-gradient-to-br from-green-500 to-green-600 rounded-lg shadow-lg flex items-center justify-center"
-            style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
-          >
-            <p className="text-white text-center text-lg font-medium">
-              {flashcards[currentIndex]?.back}
-            </p>
+            {/* Front of card */}
+            <div 
+              className="absolute inset-0 p-6 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg shadow-lg flex items-center justify-center"
+              style={{ backfaceVisibility: 'hidden' }}
+            >
+              <p className="text-white text-center text-lg font-medium">
+                {flashcards[currentIndex]?.front}
+              </p>
+            </div>
+            
+            {/* Back of card */}
+            <div 
+              className="absolute inset-0 p-6 bg-gradient-to-br from-green-500 to-green-600 rounded-lg shadow-lg flex items-center justify-center"
+              style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
+            >
+              <p className="text-white text-center text-lg font-medium">
+                {flashcards[currentIndex]?.back}
+              </p>
+            </div>
           </div>
         </div>
-      </div>
-      
-      <p className="text-center text-sm text-gray-500 dark:text-gray-400">
-        Click the card to flip
-      </p>
+        
+        <p className="text-center text-sm text-gray-500 dark:text-gray-400">
+          Click the card to flip
+        </p>
 
-      <div className="flex justify-center gap-4">
-        <button
-          onClick={handlePrevious}
-          className="px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
-        >
-          Previous
-        </button>
-        <button
-          onClick={handleNext}
-          className="px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
-        >
-          Next
-        </button>
+        <div className="flex justify-center gap-4">
+          <button
+            onClick={handlePrevious}
+            className="px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+          >
+            Previous
+          </button>
+          <button
+            onClick={handleNext}
+            className="px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+          >
+            Next
+          </button>
+        </div>
       </div>
     </div>
   );

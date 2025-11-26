@@ -6,13 +6,20 @@ interface QAProps {
   notes: string;
 }
 
+// Error response type from API
+type APIError = {
+  error: string;
+  code: string;
+  retryable?: boolean;
+};
+
 export default function QAChat({ notes }: QAProps) {
   const [question, setQuestion] = useState('');
-  const [messages, setMessages] = useState<{ type: 'question' | 'answer'; text: string }[]>([]);
+  const [messages, setMessages] = useState<{ type: 'question' | 'answer' | 'error'; text: string }[]>([]);
   const [loading, setLoading] = useState(false);
 
   const handleAsk = async () => {
-    if (!question.trim() || !notes) return;
+    if (!question.trim() || !notes || loading) return;
 
     const currentQuestion = question;
     setMessages((prev) => [...prev, { type: 'question', text: currentQuestion }]);
@@ -31,9 +38,18 @@ export default function QAChat({ notes }: QAProps) {
       });
 
       const data = await response.json();
-      setMessages((prev) => [...prev, { type: 'answer', text: data.answer || 'Unable to answer' }]);
+
+      if (!response.ok) {
+        const errorData = data as APIError;
+        const errorMessage = errorData.retryable 
+          ? `${errorData.error} (You can try again)`
+          : errorData.error;
+        setMessages((prev) => [...prev, { type: 'error', text: errorMessage }]);
+      } else {
+        setMessages((prev) => [...prev, { type: 'answer', text: data.answer || 'Unable to answer' }]);
+      }
     } catch {
-      setMessages((prev) => [...prev, { type: 'answer', text: 'Error getting answer' }]);
+      setMessages((prev) => [...prev, { type: 'error', text: 'Network error. Please check your connection.' }]);
     } finally {
       setLoading(false);
     }
@@ -70,13 +86,19 @@ export default function QAChat({ notes }: QAProps) {
               className={`p-3 rounded-lg ${
                 msg.type === 'question'
                   ? 'bg-blue-100 dark:bg-blue-900 ml-8'
+                  : msg.type === 'error'
+                  ? 'bg-red-100 dark:bg-red-900 mr-8 border border-red-200 dark:border-red-700'
                   : 'bg-gray-200 dark:bg-gray-700 mr-8'
               }`}
             >
               <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
-                {msg.type === 'question' ? 'You' : 'AI'}
+                {msg.type === 'question' ? 'You' : msg.type === 'error' ? 'Error' : 'AI'}
               </p>
-              <p className="text-gray-800 dark:text-white whitespace-pre-wrap">{msg.text}</p>
+              <p className={`whitespace-pre-wrap ${
+                msg.type === 'error' 
+                  ? 'text-red-700 dark:text-red-300' 
+                  : 'text-gray-800 dark:text-white'
+              }`}>{msg.text}</p>
             </div>
           ))
         )}
@@ -107,7 +129,7 @@ export default function QAChat({ notes }: QAProps) {
           disabled={!notes || !question.trim() || loading}
           className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
         >
-          Ask
+          {loading ? 'Asking...' : 'Ask'}
         </button>
       </div>
     </div>

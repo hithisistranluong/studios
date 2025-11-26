@@ -7,24 +7,33 @@ import Flashcards from '@/components/Flashcards';
 import Quiz from '@/components/Quiz';
 import QAChat from '@/components/QAChat';
 
-type Tab = 'summary' | 'flashcards' | 'quiz' | 'qa';
+type Tab = 'summarize' | 'flashcards' | 'quiz' | 'qa';
+
+// Error response type from API
+type APIError = {
+  error: string;
+  code: string;
+  retryable?: boolean;
+};
 
 export default function Home() {
   const [notes, setNotes] = useState('');
-  const [activeTab, setActiveTab] = useState<Tab>('summary');
+  const [activeTab, setActiveTab] = useState<Tab>('summarize');
   const [summary, setSummary] = useState('');
   const [flashcards, setFlashcards] = useState<{ front: string; back: string }[]>([]);
   const [quiz, setQuiz] = useState<{ question: string; options: string[]; correct_answer: number }[]>([]);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleAction = async (action: Tab) => {
     if (!notes.trim()) {
-      alert('Please enter some notes first');
+      setError('Please enter some notes first');
       return;
     }
 
     setLoading(true);
     setActiveTab(action);
+    setError(null);
 
     try {
       const response = await fetch('/api/ai', {
@@ -35,8 +44,18 @@ export default function Home() {
 
       const data = await response.json();
 
+      // Check for error response
+      if (!response.ok) {
+        const errorData = data as APIError;
+        setError(errorData.error || 'An error occurred');
+        if (errorData.retryable) {
+          setError(`${errorData.error} (You can try again)`);
+        }
+        return;
+      }
+
       switch (action) {
-        case 'summary':
+        case 'summarize':
           setSummary(data.summary || '');
           break;
         case 'flashcards':
@@ -46,16 +65,16 @@ export default function Home() {
           setQuiz(data.quiz || []);
           break;
       }
-    } catch (error) {
-      console.error('Error:', error);
-      alert('Something went wrong. Please try again.');
+    } catch (err) {
+      console.error('Error:', err);
+      setError('Network error. Please check your connection and try again.');
     } finally {
       setLoading(false);
     }
   };
 
   const tabs = [
-    { id: 'summary' as Tab, label: 'Summary', action: () => handleAction('summary') },
+    { id: 'summarize' as Tab, label: 'Summary', action: () => handleAction('summarize') },
     { id: 'flashcards' as Tab, label: 'Flashcards', action: () => handleAction('flashcards') },
     { id: 'quiz' as Tab, label: 'Quiz', action: () => handleAction('quiz') },
     { id: 'qa' as Tab, label: 'Q&A', action: () => setActiveTab('qa') },
@@ -103,7 +122,7 @@ export default function Home() {
               </h2>
               <div className="grid grid-cols-2 gap-3">
                 <button
-                  onClick={() => handleAction('summary')}
+                  onClick={() => handleAction('summarize')}
                   disabled={loading || !notes.trim()}
                   className="flex flex-col items-center gap-2 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/40 disabled:opacity-50 disabled:cursor-not-allowed transition-colors border border-blue-200 dark:border-blue-800"
                 >
@@ -165,7 +184,26 @@ export default function Home() {
             </div>
 
             <div className="min-h-[400px]">
-              {activeTab === 'summary' && <Summary summary={summary} loading={loading && activeTab === 'summary'} />}
+              {/* Display Error */}
+              {error && (
+                <div className="mb-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+                  <div className="flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-red-600 dark:text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <p className="text-red-700 dark:text-red-300">{error}</p>
+                    <button 
+                      onClick={() => setError(null)}
+                      className="ml-auto text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              )}
+              {activeTab === 'summarize' && <Summary summary={summary} loading={loading && activeTab === 'summarize'} />}
               {activeTab === 'flashcards' && <Flashcards flashcards={flashcards} loading={loading && activeTab === 'flashcards'} />}
               {activeTab === 'quiz' && <Quiz quiz={quiz} loading={loading && activeTab === 'quiz'} />}
               {activeTab === 'qa' && <QAChat notes={notes} />}
