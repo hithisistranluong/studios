@@ -214,7 +214,7 @@ export default function Home() {
 
       <footer className="border-t border-gray-200 dark:border-gray-700 mt-12 py-6">
         <div className="max-w-6xl mx-auto px-4 text-center text-sm text-gray-500 dark:text-gray-400">
-          <p>StudyAI - Transform your notes into smart study experiences</p>
+          <p>StudiOS - Transform your notes into smart study experiences</p>
         </div>
       </footer>
     </div>
